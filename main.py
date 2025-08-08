@@ -3,7 +3,7 @@ from fastapi import FastAPI
 # Create the FastAPI instance with metadata
 app = FastAPI(
     title="Hello API",
-    version="3.0.0",
+    version="4.0.0",
     description="A simple FastAPI project that says Hello and shows API version"
 )
 
