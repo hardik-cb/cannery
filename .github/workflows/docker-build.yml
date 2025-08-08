@@ -26,3 +26,23 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:${{ github.sha }}
           docker tag ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest
+          
+  deploy:
+      needs: build   # wait for build to finish successfully
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Setup SSH agent
+          uses: webfactory/ssh-agent@v0.8.1
+          with:
+            ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+        - name: SSH to EC2 and deploy
+          run: |
+            ssh -o StrictHostKeyChecking=no admin@${{ secrets.EC2_NAME }} << 'EOF'
+              docker rm -f $(docker ps -a -q --filter ancestor=${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest) || true
+              docker rmi -f ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest || true
+              docker pull ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest
+              docker run -d -p 8080:80 ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest
+              echo "Deployment completed successfully!"
+            EOF
