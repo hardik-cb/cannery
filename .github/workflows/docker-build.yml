@@ -33,7 +33,7 @@ jobs:
 
       steps:
         - name: Setup SSH agent
-          uses: webfactory/ssh-agent@v0.8.1
+          uses: webfactory/ssh-agent@v0.7.0
           with:
             ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
