@@ -40,10 +40,10 @@ jobs:
         - name: SSH to EC2 and deploy
           run: |
             ssh -o StrictHostKeyChecking=no admin@${{ secrets.EC2_NAME }} << 'EOF'
-              VERSION=${{ github.sha::8 }}
+              # VERSION=${{ github.sha::8 }}
               # docker rm -f $(docker ps -a -q --filter ancestor=${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest) || true
               # docker rmi -f ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest || true
-              docker pull ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest
-              docker run -d --name cannery-\$VERSION -p 8080:80 ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest
+              # docker pull ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest
+              # docker run -d --name cannery-\$VERSION -p 8080:80 ${{ secrets.DOCKERHUB_USERNAME }}/myfastapi:latest
               echo "Deployment completed successfully!"
             EOF
